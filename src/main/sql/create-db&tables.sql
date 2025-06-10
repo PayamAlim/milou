@@ -6,7 +6,7 @@ create table users (
     name nvarchar(100) not null,
     email nvarchar(100) unique not null,
     password nvarchar(255) not null,
-    create_at timestamp not null default current_timestamp
+    signUp_time timestamp not null default current_timestamp
 );
 
 create table emails (
