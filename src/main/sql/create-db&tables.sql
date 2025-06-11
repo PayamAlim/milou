@@ -15,7 +15,7 @@ create table emails (
     sender_id int not null,
     subject nvarchar(255) not null,
     body nvarchar(10000) not null,
-    sent_at timestamp default current_timestamp,
+    sent_time timestamp default current_timestamp,
 
     foreign key (sender_id) references users(id)
 );
