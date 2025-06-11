@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Basic(optional = false)
     private String name;
@@ -27,7 +27,7 @@ public class User {
     private Timestamp signUpTime;
 
     // Getters & Setters
-    public int getId() { return id; }
+    public Integer getId() { return id; }
     public void setId(int id) { this.id = id; }
 
     public String getName() { return name; }
