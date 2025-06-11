@@ -50,9 +50,18 @@ public class User {
         this.password = password;
     }
 
-    // PrePersists
     @PrePersist
-    private void fillTime() {
+    protected void fillSignUpTime() {
         signUpTime = Timestamp.valueOf(LocalDateTime.now());
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", signUpTime=" + signUpTime +
+                '}';
     }
 }

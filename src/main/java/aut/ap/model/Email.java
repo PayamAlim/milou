@@ -12,12 +12,9 @@ public class Email {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Basic(optional = false)
-    @Column(unique = true)
-    private String code;
-
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")
+    @Basic(optional = false)
     private User sender;
 
     @Basic(optional = false)
@@ -33,8 +30,6 @@ public class Email {
     // Getters & Setters
     public Integer getId() { return id; }
     public void setId(int id) { this.id = id; }
-
-    public String getCode() { return code; }
 
     public User getSender() { return sender; }
     public void setSender(User sender) { this.sender = sender; }
@@ -56,14 +51,19 @@ public class Email {
         this.body = body;
     }
 
-    // PrepPersists
     @PrePersist
-    private void fillSendTime() {
+    protected void fillSendTime() {
         sendTime = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    @PrePersist
-    private void fillCode() {
-        code = Integer.toString(id, 36);
+    @Override
+    public String toString() {
+        return "Email{" +
+                "id=" + id +
+                ", sender=" + sender.getEmail() +
+                ", subject='" + subject + '\'' +
+                ", body='" + body.substring(0, Math.min(body.length(), 50)) + "...'" +
+                ", sendTime=" + sendTime +
+                '}';
     }
 }
