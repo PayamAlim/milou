@@ -26,12 +26,7 @@ public class User {
     @Column(name = "signUp_time")
     private Timestamp signUpTime;
 
-    @PrePersist
-    private void fillTime() {
-        signUpTime = Timestamp.valueOf(LocalDateTime.now());
-    }
-
-
+    // Getters & Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -45,4 +40,19 @@ public class User {
     public void setPassword(String password) { this.password = password; }
 
     public Timestamp getSignUpTime() { return signUpTime; }
+
+    //Constructors
+    public User() {};
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    // PrePersists
+    @PrePersist
+    private void fillTime() {
+        signUpTime = Timestamp.valueOf(LocalDateTime.now());
+    }
 }

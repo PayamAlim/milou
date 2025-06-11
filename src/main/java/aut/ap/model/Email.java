@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class Email {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Basic(optional = false)
     @Column(unique = true)
@@ -27,19 +27,14 @@ public class Email {
     private String body;
 
     @Basic(optional = false)
-    @Column(name = "sent_time")
+    @Column(name = "send_time")
     private Timestamp sendTime;
 
-    @PrePersist
-    protected void fillSendTime() {
-        sendTime = Timestamp.valueOf(LocalDateTime.now());
-    }
-
-    public int getId() { return id; }
+    // Getters & Setters
+    public Integer getId() { return id; }
     public void setId(int id) { this.id = id; }
 
     public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
 
     public User getSender() { return sender; }
     public void setSender(User sender) { this.sender = sender; }
@@ -50,5 +45,25 @@ public class Email {
     public String getBody() { return body; }
     public void setBody(String body) { this.body = body; }
 
-    public Timestamp getSentAt() { return sendTime; }
+    public Timestamp getSendTime() { return sendTime; }
+
+    // Constructors
+    public Email() {};
+
+    public Email(User sender, String subject, String body) {
+        this.sender = sender;
+        this.subject = subject;
+        this.body = body;
+    }
+
+    // PrepPersists
+    @PrePersist
+    private void fillSendTime() {
+        sendTime = Timestamp.valueOf(LocalDateTime.now());
+    }
+
+    @PrePersist
+    private void fillCode() {
+        code = Integer.toString(id, 36);
+    }
 }
