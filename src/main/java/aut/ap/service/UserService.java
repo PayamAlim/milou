@@ -30,15 +30,11 @@ public class UserService {
 
         checkPassword(password);
 
-        String finalEmail = email;
+        User user = new User(name, email, password);
+
         SingletonSessionFactory.get()
                 .inTransaction(session ->
-                        session.createNativeMutationQuery("insert into users(name, email, password) " +
-                                        "values (:name, :email, :password)")
-                                .setParameter("name", name)
-                                .setParameter("email", finalEmail)
-                                .setParameter("password", password)
-                                .executeUpdate());
+                        session.persist(user));
     }
 
     public static User loginUser(String email, String password) {

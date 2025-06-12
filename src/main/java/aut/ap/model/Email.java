@@ -1,9 +1,12 @@
 package aut.ap.model;
 
+import aut.ap.service.EmailService;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 @Table(name = "emails")
@@ -12,7 +15,7 @@ public class Email {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "sender_id")
     @Basic(optional = false)
     private User sender;
@@ -58,12 +61,20 @@ public class Email {
 
     @Override
     public String toString() {
-        return "Email{" +
-                "id=" + id +
-                ", sender=" + sender.getEmail() +
-                ", subject='" + subject + '\'' +
-                ", body='" + body.substring(0, Math.min(body.length(), 50)) + "...'" +
-                ", sendTime=" + sendTime +
-                '}';
+        String code = Integer.toString(id, 36);
+
+        String date = sendTime.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<User> recipients = EmailService.findRecipientsOfEmail(this);
+        String recipientList = recipients.getFirst().getEmail();
+        for (int i = 1; i < recipients.size(); i ++)
+            recipientList += recipients.get(i).getEmail() + ", ";
+
+        return "Code: " + code + "\n" +
+                "Recipient(s): " + recipientList + "\n" +
+                "Subject: " + subject + "\n" +
+                "Date: " + date + "\n\n" +
+                body;
+
     }
 }

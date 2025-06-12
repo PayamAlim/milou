@@ -62,6 +62,14 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", signUpTime=" + signUpTime +
+                ", password=" + password +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return id.equals(user.id);
     }
 }
