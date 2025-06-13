@@ -58,7 +58,7 @@ public class Main {
                                 if (!wrongEmails.isEmpty())
                                     System.out.println("BUT NOT TO " + wrongEmails + "; THEY DOES NOT EXIST\n");
 
-                                System.out.println("Code: " + Integer.toString(sentEmail.getId(), 36));
+                                System.out.println("Code: " + EmailService.convertToCode(sentEmail.getId()));
                             } catch (Exception e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
@@ -89,7 +89,7 @@ public class Main {
                                 Email repliedEmail = EmailService.replyEmail(user, code, body);
 
                                 System.out.println("Successfully sent your reply to email" + code + "\n");
-                                System.out.println("Code :" + Integer.toString(repliedEmail.getId(), 36));
+                                System.out.println("Code :" + EmailService.convertToCode(repliedEmail.getId()));
                             } catch (Exception e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
@@ -118,7 +118,7 @@ public class Main {
                                 if (!wrongEmails.isEmpty())
                                     System.out.println("BUT NOT TO " + wrongEmails + "; THEY DOES NOT EXIST\n");
 
-                                System.out.println("Code: " + Integer.toString(forwardedEmail.getId(), 36));
+                                System.out.println("Code: " + EmailService.convertToCode(forwardedEmail.getId()));
                             } catch (Exception e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
@@ -174,7 +174,7 @@ public class Main {
     public static void showEmails(String title, List<Email> emails) {
         System.out.println(title + ": (" + emails.size() + ")\n");
         for (Email email: emails)
-            System.out.println("+ " + email.getSender().getEmail() + " - " + email.getSubject() + "(" + Integer.toString(email.getId(), 36) + ")");
+            System.out.println("+ " + email.getSender().getEmail() + " - " + email.getSubject() + "(" + EmailService.convertToCode(email.getId()) + ")");
     }
 
     public static String completeEmail(String email) {

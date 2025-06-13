@@ -172,4 +172,12 @@ public class EmailService {
 
         return email;
     }
+
+    public static String convertToCode(Integer id) {
+        String code = Integer.toString(id, 36);
+        int len = code.length();
+        for (int i = 0; i < 6 - len; i++)
+            code = "0" + code;
+        return code;
+    }
 }

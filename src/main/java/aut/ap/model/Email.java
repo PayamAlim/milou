@@ -61,7 +61,7 @@ public class Email {
 
     @Override
     public String toString() {
-        String code = Integer.toString(id, 36);
+        String code = EmailService.convertToCode(id);
 
         String date = sendTime.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
