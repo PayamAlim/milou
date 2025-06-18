@@ -62,7 +62,6 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", signUpTime=" + signUpTime +
-                ", password=" + password +
                 '}';
     }
 

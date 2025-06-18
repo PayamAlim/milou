@@ -126,7 +126,7 @@ public class EmailService {
         if (code == null || code.isEmpty())
             throw new IllegalArgumentException("code cannot be empty");
 
-        Integer emailId = Integer.parseInt(code);
+        Integer emailId = Integer.parseInt(code, 36);
 
         Email foundEmail = SingletonSessionFactory.get()
                 .fromTransaction(session ->
