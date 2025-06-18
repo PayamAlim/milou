@@ -33,4 +33,4 @@ drop table email_recipients;
 drop table emails;
 drop table users;
 
-select * from emails;
+select * from email_recipients;

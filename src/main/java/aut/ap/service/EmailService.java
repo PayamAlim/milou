@@ -105,21 +105,13 @@ public class EmailService {
         recipients.add(email.getSender());
         recipients.remove(sender);
 
-        Email reply = makeEmail(sender, "[Re] " + email.getSubject(), body);
-
-        sendEmail(sender, reply.getSubject(), reply.getBody(), recipients);
-
-        return reply;
+        return sendEmail(sender, "[Re] " + email.getSubject(), body, recipients);
     }
 
     public static Email forwardEmail(User sender, String code, List<User> recipients) {
         Email email = findByCode(code);
 
-        Email forwardedEmail = makeEmail(sender, "[Fw] " + email.getSubject(), email.getBody());
-
-        sendEmail(sender, forwardedEmail.getSubject(), forwardedEmail.getBody(), recipients);
-
-        return forwardedEmail;
+        return sendEmail(sender, "[Fw] " + email.getSubject(), email.getBody(), recipients);
     }
 
     public static Email findByCode(String code) {
