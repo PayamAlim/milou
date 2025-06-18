@@ -22,9 +22,6 @@ public class UserService {
         if (email == null || email.isEmpty())
             throw new IllegalArgumentException("Email cannot be empty");
 
-        if (!email.contains("@"))
-            email = email + "@milou.com";
-
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Name cannot be empty");
 
@@ -42,9 +39,6 @@ public class UserService {
 
         if (email == null || email.isEmpty())
             throw new IllegalArgumentException("Email cannot be empty");
-
-        if (!email.contains("@"))
-            email = email + "@milou.com";
 
         if (findByEmail(email) == null)
             throw new IllegalArgumentException("No such email.\nPlease sign up first!");

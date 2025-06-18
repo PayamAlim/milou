@@ -153,7 +153,7 @@ public class Main {
                 String name = scn.nextLine().trim();
 
                 System.out.print("Email: ");
-                String email = scn.nextLine().trim();
+                String email = completeEmail(scn.nextLine().trim());
 
                 System.out.print("Password: ");
                 String password = scn.nextLine().trim();
