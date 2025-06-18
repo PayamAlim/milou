@@ -3,6 +3,8 @@ import aut.ap.model.*;
 import aut.ap.service.EmailService;
 import aut.ap.service.UserService;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -163,8 +165,16 @@ public class Main {
                 } catch (IllegalArgumentException e) {
                     System.out.println("Error: " + e.getMessage());
                 }
-            } else if ("q".equals(command) || "quit".equalsIgnoreCase(command))
+            } else if ("q".equals(command) || "quit".equalsIgnoreCase(command)) {
+                try {
+                    PrintWriter writer = new PrintWriter("E:\\Code\\Milou\\src\\main\\logs\\hibernate.log");
+                    writer.print("");
+                    writer.close();
+                } catch (FileNotFoundException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
                 break;
+            }
             else {
                 System.err.println("Invalid command. Please try again.");
             }
