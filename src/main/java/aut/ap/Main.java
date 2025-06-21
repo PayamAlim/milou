@@ -3,6 +3,8 @@ import aut.ap.model.*;
 import aut.ap.service.EmailService;
 import aut.ap.service.UserService;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -24,7 +26,7 @@ public class Main {
 
                 try {
                     User user = UserService.loginUser(email, password);
-                    System.out.println("Welcome back, " + user.getName() + "!");
+                    System.out.println("Welcome back, " + user.getName() + "!\n");
 
                     showEmails("Unread Emails", EmailService.showUnreadEmails(user));
 
@@ -58,7 +60,7 @@ public class Main {
                                 if (!wrongEmails.isEmpty())
                                     System.out.println("BUT NOT TO " + wrongEmails + "; THEY DOES NOT EXIST\n");
 
-                                System.out.println("Code: " + Integer.toString(sentEmail.getId(), 36));
+                                System.out.println("Code: " + EmailService.convertToCode(sentEmail.getId()));
                             } catch (Exception e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
@@ -89,7 +91,7 @@ public class Main {
                                 Email repliedEmail = EmailService.replyEmail(user, code, body);
 
                                 System.out.println("Successfully sent your reply to email" + code + "\n");
-                                System.out.println("Code :" + Integer.toString(repliedEmail.getId(), 36));
+                                System.out.println("Code: " + EmailService.convertToCode(repliedEmail.getId()));
                             } catch (Exception e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
@@ -118,7 +120,7 @@ public class Main {
                                 if (!wrongEmails.isEmpty())
                                     System.out.println("BUT NOT TO " + wrongEmails + "; THEY DOES NOT EXIST\n");
 
-                                System.out.println("Code: " + Integer.toString(forwardedEmail.getId(), 36));
+                                System.out.println("Code: " + EmailService.convertToCode(forwardedEmail.getId()));
                             } catch (Exception e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
@@ -151,7 +153,7 @@ public class Main {
                 String name = scn.nextLine().trim();
 
                 System.out.print("Email: ");
-                String email = scn.nextLine().trim();
+                String email = completeEmail(scn.nextLine().trim());
 
                 System.out.print("Password: ");
                 String password = scn.nextLine().trim();
@@ -163,8 +165,16 @@ public class Main {
                 } catch (IllegalArgumentException e) {
                     System.out.println("Error: " + e.getMessage());
                 }
-            } else if ("q".equals(command) || "quit".equalsIgnoreCase(command))
+            } else if ("q".equals(command) || "quit".equalsIgnoreCase(command)) {
+                try {
+                    PrintWriter writer = new PrintWriter("E:\\Code\\Milou\\src\\main\\logs\\hibernate.log");
+                    writer.print("");
+                    writer.close();
+                } catch (FileNotFoundException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
                 break;
+            }
             else {
                 System.err.println("Invalid command. Please try again.");
             }
@@ -172,9 +182,9 @@ public class Main {
     }
 
     public static void showEmails(String title, List<Email> emails) {
-        System.out.println(title + ": (" + emails.size() + ")\n");
+        System.out.println(title + ": (" + emails.size() + ")");
         for (Email email: emails)
-            System.out.println("+ " + email.getSender().getEmail() + " - " + email.getSubject() + "(" + Integer.toString(email.getId(), 36) + ")");
+            System.out.println("+ " + email.getSender().getEmail() + " - " + email.getSubject() + "(" + EmailService.convertToCode(email.getId()) + ")");
     }
 
     public static String completeEmail(String email) {

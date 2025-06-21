@@ -105,28 +105,20 @@ public class EmailService {
         recipients.add(email.getSender());
         recipients.remove(sender);
 
-        Email reply = makeEmail(sender, "[Re] " + email.getSubject(), body);
-
-        sendEmail(sender, reply.getSubject(), reply.getBody(), recipients);
-
-        return reply;
+        return sendEmail(sender, "[Re] " + email.getSubject(), body, recipients);
     }
 
     public static Email forwardEmail(User sender, String code, List<User> recipients) {
         Email email = findByCode(code);
 
-        Email forwardedEmail = makeEmail(sender, "[Fw] " + email.getSubject(), email.getBody());
-
-        sendEmail(sender, forwardedEmail.getSubject(), forwardedEmail.getBody(), recipients);
-
-        return forwardedEmail;
+        return sendEmail(sender, "[Fw] " + email.getSubject(), email.getBody(), recipients);
     }
 
     public static Email findByCode(String code) {
         if (code == null || code.isEmpty())
             throw new IllegalArgumentException("code cannot be empty");
 
-        Integer emailId = Integer.parseInt(code);
+        Integer emailId = Integer.parseInt(code, 36);
 
         Email foundEmail = SingletonSessionFactory.get()
                 .fromTransaction(session ->
@@ -171,5 +163,13 @@ public class EmailService {
                         session.persist(email));
 
         return email;
+    }
+
+    public static String convertToCode(Integer id) {
+        String code = Integer.toString(id, 36);
+        int len = code.length();
+        for (int i = 0; i < 6 - len; i++)
+            code = "0" + code;
+        return code;
     }
 }

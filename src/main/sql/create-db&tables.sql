@@ -1,6 +1,3 @@
-create database milou_db;
-use milou_db;
-
 create table users (
     id int primary key auto_increment,
     name nvarchar(100) not null,
@@ -28,7 +25,3 @@ create table email_recipients (
     foreign key (email_id) references emails(id),
     foreign key (recipient_id) references users(id)
 );
-
-drop table email_recipients;
-drop table emails;
-drop table users;
