@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -199,6 +201,13 @@ public class Main {
         });
 
         quitButton.addActionListener((ActionEvent e) -> {
+            try {
+                PrintWriter writer = new PrintWriter("E:\\Code\\Milou\\src\\main\\logs\\hibernate.log");
+                writer.print("");
+                writer.close();
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(mainFrame,"Error: " + ex.getMessage());
+            }
             System.exit(0);
         });
 
