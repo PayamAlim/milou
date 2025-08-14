@@ -26,14 +26,15 @@ public class Main {
     static HashMap<Integer, ArrayList<JList<String> > > accountSentList = new HashMap<>();
 
     public static void main(String[] args) {
-        HashMap<Integer, JFrame> accountFrames = new HashMap<>();
+        final int[] accCount = {0};
 
+        // Main Frame
         JFrame mainFrame = new JFrame("MILOU");
         mainFrame.setLayout(null);
         mainFrame.setSize(mainSize);
         mainFrame.setLocationRelativeTo(null);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Public Panel
         JPanel publicPanel = new JPanel();
         publicPanel.setLayout(null);
         publicPanel.setSize(mainSize);
@@ -42,25 +43,26 @@ public class Main {
         ImageIcon milouIcon = new ImageIcon("assets\\milou.jpg");
         JLabel milouLabel = new JLabel(new ImageIcon(milouIcon.getImage().getScaledInstance(imageSize.width, imageSize.height, Image.SCALE_SMOOTH)));
         milouLabel.setBounds(50, 35, imageSize.width, imageSize.height);
+        publicPanel.add(milouLabel);
 
         JButton logInButton = new JButton("Log In");
         logInButton.setLocation(300, 35);
         logInButton.setSize(buttonSize);
+        publicPanel.add(logInButton);
 
         JButton signUpButton = new JButton("Sign Up");
         signUpButton.setLocation(300, 105);
         signUpButton.setSize(buttonSize);
+        publicPanel.add(signUpButton);
 
         JButton quitButton = new JButton("Quit");
         quitButton.setLocation(300, 175);
         quitButton.setSize(buttonSize);
-
-        publicPanel.add(milouLabel);
-        publicPanel.add(logInButton);
-        publicPanel.add(signUpButton);
         publicPanel.add(quitButton);
+
         mainFrame.add(publicPanel);
 
+        // LogIn Panel
         JPanel logInPanel = new JPanel();
         logInPanel.setLayout(null);
         logInPanel.setSize(mainSize);
@@ -70,19 +72,25 @@ public class Main {
         logInEmailLabel.setBounds(100, 45, 80, 25);
         JTextField logInEmailField = new JTextField();
         logInEmailField.setBounds(190, 45, 200, 25);
+        logInPanel.add(logInEmailLabel);
+        logInPanel.add(logInEmailField);
 
         JLabel logInPasswordLabel = new JLabel("Password:");
         logInPasswordLabel.setBounds(100, 75, 80, 25);
         JPasswordField logInPasswordField = new JPasswordField();
         logInPasswordField.setBounds(190, 75, 200, 25);
+        logInPanel.add(logInPasswordLabel);
+        logInPanel.add(logInPasswordField);
 
         JButton logInSubmitButton = new JButton("Submit");
         logInSubmitButton.setSize(buttonSize);
         logInSubmitButton.setLocation(190, 125);
+        logInPanel.add(logInSubmitButton);
 
         JButton logInBackButton = new JButton("Back");
         logInBackButton.setSize(buttonSize);
         logInBackButton.setLocation(190, 175);
+        logInPanel.add(logInBackButton);
 
         logInSubmitButton.addActionListener(e -> {
             String email = completeEmail(logInEmailField.getText());
@@ -95,11 +103,13 @@ public class Main {
                 accountAllList.put(user.getId(), new ArrayList<>());
                 accountSentList.put(user.getId(), new ArrayList<>());
 
+                // Acc Frame
                 JFrame newFrame = new JFrame(user.getName());
                 newFrame.setSize(accSize);
-                int accLocType = (accountFrames.size() + 1) % 4;
+                int accLocType = (accCount[0] + 1) % 4;
                 newFrame.setLocation(((accLocType + 1) % 2) * 1040, ((accLocType / 2) % 2) * 400);
 
+                // Acc Main Panel
                 JPanel accMainPanel = new JPanel(null);
                 accMainPanel.setBounds(0, 0, accSize.width, accSize.height);
 
@@ -125,6 +135,7 @@ public class Main {
                 accQuitButton.setBounds(332, 300, buttonSize.width, buttonSize.height);
                 accMainPanel.add(accQuitButton);
 
+                // Send Panel
                 JPanel sendPanel = new JPanel();
                 sendPanel.setLayout(null);
                 sendPanel.setSize(mainSize);
@@ -183,7 +194,7 @@ public class Main {
 
                         String statusMessage = "";
                         if (!existEmails.isEmpty())
-                            statusMessage += "Successfully forwarded your email.";
+                            statusMessage += "Successfully sent your email.";
                         if (!wrongEmails.isEmpty()) {
                             statusMessage += "\nBUT NOT TO " ;
                             for (String wrongEmail: wrongEmails)
@@ -211,6 +222,7 @@ public class Main {
                     newFrame.revalidate();
                 });
 
+                // View Panel
                 JPanel viewPanel = new JPanel(null);
                 viewPanel.setSize(accSize);
 
@@ -323,6 +335,7 @@ public class Main {
                     newFrame.repaint();
                 });
 
+                // Reply Panel
                 JPanel replyPanel = new JPanel();
                 replyPanel.setLayout(null);
                 replyPanel.setSize(mainSize);
@@ -380,6 +393,7 @@ public class Main {
                     newFrame.repaint();
                 });
 
+                // Forward Panel
                 JPanel forwardPanel = new JPanel();
                 forwardPanel.setLayout(null);
                 forwardPanel.setSize(mainSize);
@@ -464,12 +478,12 @@ public class Main {
                 newFrame.add(accMainPanel);
 
                 newFrame.setVisible(true);
-                accountFrames.put(user.getId(), newFrame);
+
+                accCount[0]++;
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(mainFrame,"Error: " + ex.getMessage());
             }
         });
-
         logInBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -480,14 +494,14 @@ public class Main {
             }
         });
 
-        logInPanel.add(logInEmailLabel);
-        logInPanel.add(logInEmailField);
-        logInPanel.add(logInPasswordLabel);
-        logInPanel.add(logInPasswordField);
-        logInPanel.add(logInSubmitButton);
-        logInPanel.add(logInBackButton);
+        logInButton.addActionListener(e -> {
+            mainFrame.remove(publicPanel);
+            mainFrame.add(logInPanel);
+            mainFrame.revalidate();
+            mainFrame.repaint();
+        });
 
-
+        // SignUp Panel
         JPanel signUpPanel = new JPanel();
         signUpPanel.setLayout(null);
         signUpPanel.setSize(mainSize);
@@ -497,32 +511,31 @@ public class Main {
         signUpNameLabel.setBounds(100, 15, 80, 25);
         JTextField signUpNameField = new JTextField();
         signUpNameField.setBounds(190, 15, 200, 25);
+        signUpPanel.add(signUpNameLabel);
+        signUpPanel.add(signUpNameField);
 
         JLabel signUpEmailLabel = new JLabel("Email:");
         signUpEmailLabel.setBounds(100, 45, 80, 25);
         JTextField signUpEmailField = new JTextField();
         signUpEmailField.setBounds(190, 45, 200, 25);
+        signUpPanel.add(signUpEmailLabel);
+        signUpPanel.add(signUpEmailField);
 
         JLabel signUpPasswordLabel = new JLabel("Password:");
         signUpPasswordLabel.setBounds(100, 75, 80, 25);
         JPasswordField signUpPasswordField = new JPasswordField();
         signUpPasswordField.setBounds(190, 75, 200, 25);
+        signUpPanel.add(signUpPasswordLabel);
+        signUpPanel.add(signUpPasswordField);
 
         JButton signUpSubmitButton = new JButton("Submit");
         signUpSubmitButton.setSize(buttonSize);
         signUpSubmitButton.setLocation(190, 125);
+        signUpPanel.add(signUpSubmitButton);
 
         JButton signUpBackButton = new JButton("Back");
         signUpBackButton.setSize(buttonSize);
         signUpBackButton.setLocation(190, 175);
-
-        signUpPanel.add(signUpNameLabel);
-        signUpPanel.add(signUpNameField);
-        signUpPanel.add(signUpEmailLabel);
-        signUpPanel.add(signUpEmailField);
-        signUpPanel.add(signUpPasswordLabel);
-        signUpPanel.add(signUpPasswordField);
-        signUpPanel.add(signUpSubmitButton);
         signUpPanel.add(signUpBackButton);
 
         signUpSubmitButton.addActionListener(e -> {
@@ -537,17 +550,9 @@ public class Main {
                 JOptionPane.showMessageDialog(mainFrame,"Error: " + ex.getMessage());
             }
         });
-
         signUpBackButton.addActionListener(e -> {
             mainFrame.remove(signUpPanel);
             mainFrame.add(publicPanel);
-            mainFrame.revalidate();
-            mainFrame.repaint();
-        });
-
-        logInButton.addActionListener(e -> {
-            mainFrame.remove(publicPanel);
-            mainFrame.add(logInPanel);
             mainFrame.revalidate();
             mainFrame.repaint();
         });
@@ -559,6 +564,7 @@ public class Main {
             mainFrame.repaint();
         });
 
+        // Quit Button
         quitButton.addActionListener(e -> {
             try {
                 PrintWriter writer = new PrintWriter("E:\\Code\\Milou\\src\\main\\logs\\hibernate.log");
@@ -570,6 +576,7 @@ public class Main {
             System.exit(0);
         });
 
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
     }
 
