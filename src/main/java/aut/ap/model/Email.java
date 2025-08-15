@@ -68,7 +68,7 @@ public class Email {
         List<User> recipients = EmailService.findRecipientsOfEmail(this);
         String recipientList = recipients.getFirst().getEmail();
         for (int i = 1; i < recipients.size(); i ++)
-            recipientList += recipients.get(i).getEmail() + ", ";
+            recipientList += ", "  + recipients.get(i).getEmail();
 
         return "Code: " + code + "\n" +
                 "Recipient(s): " + recipientList + "\n" +
