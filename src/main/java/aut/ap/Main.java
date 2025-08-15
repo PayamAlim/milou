@@ -292,7 +292,7 @@ public class Main {
                     if (code != null) {
                         try {
                             Email foundEmail = EmailService.findByCode(code);
-                            EmailService.readEmail(user, foundEmail);
+                            EmailService.readEmail(user, code);
                             refreshUsers(Arrays.asList(user));
 
                             JPanel readPanel = new JPanel(null);
@@ -486,7 +486,7 @@ public class Main {
                         try {
                             Email deletedEmail = EmailService.findByCode(code);
                             List<User> recipients = EmailService.findRecipientsOfEmail(deletedEmail);
-                            EmailService.deleteEmail(user, EmailService.findByCode(code));
+                            EmailService.deleteEmail(user, code);
                             refreshUsers(recipients);
                             refreshUsers(Arrays.asList(user));
 

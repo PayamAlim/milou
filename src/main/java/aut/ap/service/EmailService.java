@@ -66,8 +66,10 @@ public class EmailService {
                                 .getResultList());
     }
 
-    public static void readEmail(User reader, Email email) {
+    public static void readEmail(User reader, String code) {
         if (reader == null) throw new IllegalArgumentException("Sender is no one");
+
+        Email email = findByCode(code);
 
         if (!email.getSender().getId().equals(reader.getId()) && !findRecipientsOfEmail(email).contains(reader))
             throw new IllegalArgumentException("You cannot read this email.");
@@ -135,6 +137,9 @@ public class EmailService {
         if (code == null || code.isEmpty())
             throw new IllegalArgumentException("code cannot be empty");
 
+        if (code.length() != 6)
+            throw new IllegalArgumentException("code must be six digit");
+
         Integer emailId = Integer.parseInt(code, 36);
 
         Email foundEmail = SingletonSessionFactory.get()
@@ -182,9 +187,10 @@ public class EmailService {
         return email;
     }
 
-    public static Email deleteEmail(User deleter, Email email) {
+    public static void deleteEmail(User deleter, String code) {
         if (deleter == null) throw new IllegalArgumentException("Sender is no one");
-        if (email == null) throw new IllegalArgumentException("No email selected");
+
+        Email email =  findByCode(code);
 
         boolean isSender = email.getSender().getId().equals(deleter.getId());
         boolean isRecipient = findRecipientsOfEmail(email).contains(deleter);
@@ -217,8 +223,6 @@ public class EmailService {
                                     .executeUpdate()
                     );
         }
-
-        return null;
     }
 
     public static String convertToCode(Integer id) {
