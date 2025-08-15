@@ -379,7 +379,7 @@ public class Main {
                         String code = replyCodeField.getText();
                         String body = replyBodyField.getText();
                         Email repliedEmail = EmailService.replyEmail(user, code, body);
-                        refreshUsers(EmailService.findRecipientsOfEmail(repliedEmail));
+                        refreshUsers(EmailService.findRecipientsOfEmail(EmailService.convertToCode(repliedEmail.getId())));
                         refreshUsers(Arrays.asList(user));
 
                         JOptionPane.showMessageDialog(newFrame, "Successfully sent your reply to email" + code + "\nCode: " + EmailService.convertToCode(repliedEmail.getId()));
@@ -489,7 +489,7 @@ public class Main {
                         if (code != null) {
                             try {
                                 Email deletedEmail = EmailService.findByCode(code);
-                                List<User> recipients = EmailService.findRecipientsOfEmail(deletedEmail);
+                                List<User> recipients = EmailService.findRecipientsOfEmail(code);
                                 EmailService.deleteEmail(user, code);
                                 refreshUsers(recipients);
                                 refreshUsers(Arrays.asList(user));

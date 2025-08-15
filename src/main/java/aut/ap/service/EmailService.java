@@ -10,7 +10,7 @@ import java.util.List;
 
 public class EmailService {
     public static Email sendEmail(User sender, String subject, String body, List<User> recipients) {
-
+        if (sender == null) throw new IllegalArgumentException("Sender is no one");
         if (recipients.isEmpty()) throw new IllegalArgumentException("No recipients");
 
         Email email = makeEmail(sender, subject, body);
@@ -72,7 +72,7 @@ public class EmailService {
 
         Email email = findByCode(code);
 
-        if (!email.getSender().getId().equals(reader.getId()) && !findRecipientsOfEmail(email).contains(reader))
+        if (!email.getSender().getId().equals(reader.getId()) && !findRecipientsOfEmail(code).contains(reader))
             throw new IllegalArgumentException("You cannot read this email.");
 
         if (!SingletonSessionFactory.get().fromTransaction(session ->
@@ -108,12 +108,12 @@ public class EmailService {
         Email email = findByCode(code);
 
         boolean isSender = email.getSender().getId().equals(sender.getId());
-        boolean isRecipient = findRecipientsOfEmail(email).contains(sender);
+        boolean isRecipient = findRecipientsOfEmail(code).contains(sender);
 
         if (!isSender && !isRecipient)
             throw new IllegalArgumentException("You cannot reply this email.");
 
-        List<User> recipients = findRecipientsOfEmail(email);
+        List<User> recipients = findRecipientsOfEmail(code);
         recipients.add(email.getSender());
         recipients.remove(sender);
 
@@ -126,7 +126,7 @@ public class EmailService {
         Email email = findByCode(code);
 
         boolean isSender = email.getSender().getId().equals(sender.getId());
-        boolean isRecipient = findRecipientsOfEmail(email).contains(sender);
+        boolean isRecipient = findRecipientsOfEmail(code).contains(sender);
 
         if (!isSender && !isRecipient)
             throw new IllegalArgumentException("You cannot forward this email.");
@@ -158,7 +158,9 @@ public class EmailService {
         return foundEmail;
     }
 
-    public static List<User> findRecipientsOfEmail(Email email) {
+    public static List<User> findRecipientsOfEmail(String code) {
+        Email email = findByCode(code);
+
         return SingletonSessionFactory.get()
                 .fromTransaction(session ->
                         session.createNativeQuery("select u.id, u.name, u.email, u.password, u.signUp_time " +
@@ -194,7 +196,7 @@ public class EmailService {
         Email email =  findByCode(code);
 
         boolean isSender = email.getSender().getId().equals(deleter.getId());
-        boolean isRecipient = findRecipientsOfEmail(email).contains(deleter);
+        boolean isRecipient = findRecipientsOfEmail(code).contains(deleter);
 
         if (!isSender && !isRecipient)
             throw new IllegalArgumentException("You cannot delete this email.");
