@@ -10,6 +10,7 @@ import java.util.List;
 
 public class EmailService {
     public static Email sendEmail(User sender, String subject, String body, List<User> recipients) {
+        if (sender == null) throw new IllegalArgumentException("Sender is no one");
         if (recipients.isEmpty()) throw new IllegalArgumentException("No recipients");
 
         Email email = makeEmail(sender, subject, body);
@@ -66,10 +67,12 @@ public class EmailService {
                                 .getResultList());
     }
 
-    public static void readEmail(User reader, Email email) {
+    public static void readEmail(User reader, String code) {
         if (reader == null) throw new IllegalArgumentException("Sender is no one");
 
-        if (!email.getSender().getId().equals(reader.getId()) && !findRecipientsOfEmail(email).contains(reader))
+        Email email = findByCode(code);
+
+        if (!email.getSender().getId().equals(reader.getId()) && !findRecipientsOfEmail(code).contains(reader))
             throw new IllegalArgumentException("You cannot read this email.");
 
         if (!SingletonSessionFactory.get().fromTransaction(session ->
@@ -100,8 +103,17 @@ public class EmailService {
     }
 
     public static Email replyEmail(User sender, String code, String body) {
+        if (sender == null) throw new IllegalArgumentException("Sender is no one");
+
         Email email = findByCode(code);
-        List<User> recipients = findRecipientsOfEmail(email);
+
+        boolean isSender = email.getSender().getId().equals(sender.getId());
+        boolean isRecipient = findRecipientsOfEmail(code).contains(sender);
+
+        if (!isSender && !isRecipient)
+            throw new IllegalArgumentException("You cannot reply this email.");
+
+        List<User> recipients = findRecipientsOfEmail(code);
         recipients.add(email.getSender());
         recipients.remove(sender);
 
@@ -109,7 +121,15 @@ public class EmailService {
     }
 
     public static Email forwardEmail(User sender, String code, List<User> recipients) {
+        if (sender == null) throw new IllegalArgumentException("Sender is no one");
+
         Email email = findByCode(code);
+
+        boolean isSender = email.getSender().getId().equals(sender.getId());
+        boolean isRecipient = findRecipientsOfEmail(code).contains(sender);
+
+        if (!isSender && !isRecipient)
+            throw new IllegalArgumentException("You cannot forward this email.");
 
         return sendEmail(sender, "[Fw] " + email.getSubject(), email.getBody(), recipients);
     }
@@ -117,6 +137,9 @@ public class EmailService {
     public static Email findByCode(String code) {
         if (code == null || code.isEmpty())
             throw new IllegalArgumentException("code cannot be empty");
+
+        if (code.length() != 6)
+            throw new IllegalArgumentException("code must be six digit");
 
         Integer emailId = Integer.parseInt(code, 36);
 
@@ -135,7 +158,9 @@ public class EmailService {
         return foundEmail;
     }
 
-    public static List<User> findRecipientsOfEmail(Email email) {
+    public static List<User> findRecipientsOfEmail(String code) {
+        Email email = findByCode(code);
+
         return SingletonSessionFactory.get()
                 .fromTransaction(session ->
                         session.createNativeQuery("select u.id, u.name, u.email, u.password, u.signUp_time " +
@@ -165,12 +190,13 @@ public class EmailService {
         return email;
     }
 
-    public static Email deleteEmail(User deleter, Email email) {
+    public static void deleteEmail(User deleter, String code) {
         if (deleter == null) throw new IllegalArgumentException("Sender is no one");
-        if (email == null) throw new IllegalArgumentException("No email selected");
+
+        Email email =  findByCode(code);
 
         boolean isSender = email.getSender().getId().equals(deleter.getId());
-        boolean isRecipient = findRecipientsOfEmail(email).contains(deleter);
+        boolean isRecipient = findRecipientsOfEmail(code).contains(deleter);
 
         if (!isSender && !isRecipient)
             throw new IllegalArgumentException("You cannot delete this email.");
@@ -200,8 +226,6 @@ public class EmailService {
                                     .executeUpdate()
                     );
         }
-
-        return null;
     }
 
     public static String convertToCode(Integer id) {

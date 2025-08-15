@@ -25,6 +25,13 @@ public class UserService {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Name cannot be empty");
 
+        int atSignCount = 0;
+        for (int i = 0; i < email.length(); i ++)
+            if (email.charAt(i) == '@')
+                atSignCount ++;
+        if (atSignCount > 1)
+            throw new IllegalArgumentException("Invalid Email");
+
         checkPassword(password);
 
         User user = new User(name, email, password);

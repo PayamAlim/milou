@@ -5,8 +5,6 @@ import aut.ap.service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -39,6 +37,7 @@ public class Main {
         publicPanel.setLayout(null);
         publicPanel.setSize(mainSize);
         publicPanel.setLocation(0, 0);
+        publicPanel.setBackground(new Color(0xFFFFFF));
 
         ImageIcon milouIcon = new ImageIcon("assets\\milou.jpg");
         JLabel milouLabel = new JLabel(new ImageIcon(milouIcon.getImage().getScaledInstance(imageSize.width, imageSize.height, Image.SCALE_SMOOTH)));
@@ -67,6 +66,7 @@ public class Main {
         logInPanel.setLayout(null);
         logInPanel.setSize(mainSize);
         logInPanel.setLocation(0, 0);
+        logInPanel.setBackground(new Color(0xFFFFFF));
 
         JLabel logInEmailLabel = new JLabel("Email:");
         logInEmailLabel.setBounds(100, 45, 80, 25);
@@ -115,6 +115,7 @@ public class Main {
                 // Acc Main Panel
                 JPanel accMainPanel = new JPanel(null);
                 accMainPanel.setBounds(0, 0, accSize.width, accSize.height);
+                accMainPanel.setBackground(new Color(0xFFFFFF));
 
                 showEmails(accMainPanel, "Unread Emails", EmailService.showUnreadEmails(user), 0, 0, accSize.width - (buttonSize.width + 20), accSize.height, user.getId());
 
@@ -147,6 +148,7 @@ public class Main {
                 sendPanel.setLayout(null);
                 sendPanel.setSize(mainSize);
                 sendPanel.setLocation(0, 0);
+                sendPanel.setBackground(new Color(0xFFFFFF));
 
                 JLabel sendRecipients = new JLabel("Recipient(s):");
                 sendRecipients.setBounds(100, 45, 80, 25);
@@ -199,9 +201,7 @@ public class Main {
                         refreshUsers(existEmails);
                         refreshUsers(Arrays.asList(user));
 
-                        String statusMessage = "";
-                        if (!existEmails.isEmpty())
-                            statusMessage += "Successfully sent your email.";
+                        String statusMessage = "Successfully sent your email.";
                         if (!wrongEmails.isEmpty()) {
                             statusMessage += "\nBUT NOT TO " ;
                             for (String wrongEmail: wrongEmails)
@@ -232,6 +232,7 @@ public class Main {
                 // View Panel
                 JPanel viewPanel = new JPanel(null);
                 viewPanel.setSize(accSize);
+                viewPanel.setBackground(new Color(0xFFFFFF));
 
                 ImageIcon icon = new ImageIcon("assets\\opened mail.jpg");
                 JLabel imageLabel = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(imageSize.width, imageSize.height, Image.SCALE_SMOOTH)));
@@ -294,7 +295,7 @@ public class Main {
                     if (code != null) {
                         try {
                             Email foundEmail = EmailService.findByCode(code);
-                            EmailService.readEmail(user, foundEmail);
+                            EmailService.readEmail(user, code);
                             refreshUsers(Arrays.asList(user));
 
                             JPanel readPanel = new JPanel(null);
@@ -347,6 +348,7 @@ public class Main {
                 replyPanel.setLayout(null);
                 replyPanel.setSize(mainSize);
                 replyPanel.setLocation(0, 0);
+                replyPanel.setBackground(new Color(0xFFFFFF));
 
                 JLabel replyCode = new JLabel("Code:");
                 replyCode.setBounds(100, 45, 80, 25);
@@ -377,7 +379,7 @@ public class Main {
                         String code = replyCodeField.getText();
                         String body = replyBodyField.getText();
                         Email repliedEmail = EmailService.replyEmail(user, code, body);
-                        refreshUsers(EmailService.findRecipientsOfEmail(repliedEmail));
+                        refreshUsers(EmailService.findRecipientsOfEmail(EmailService.convertToCode(repliedEmail.getId())));
                         refreshUsers(Arrays.asList(user));
 
                         JOptionPane.showMessageDialog(newFrame, "Successfully sent your reply to email" + code + "\nCode: " + EmailService.convertToCode(repliedEmail.getId()));
@@ -405,6 +407,7 @@ public class Main {
                 forwardPanel.setLayout(null);
                 forwardPanel.setSize(mainSize);
                 forwardPanel.setLocation(0, 0);
+                forwardPanel.setBackground(new Color(0xFFFFFF));
 
                 JLabel forwardCode = new JLabel("Code:");
                 forwardCode.setBounds(100, 45, 80, 25);
@@ -449,9 +452,7 @@ public class Main {
                         refreshUsers(existEmails);
                         refreshUsers(Arrays.asList(user));
 
-                        String statusMessage = "";
-                        if (!existEmails.isEmpty())
-                            statusMessage += "Successfully forwarded your email.";
+                        String statusMessage = "Successfully forwarded your email.";
                         if (!wrongEmails.isEmpty()) {
                             statusMessage += "\nBUT NOT TO " ;
                             for (String wrongEmail: wrongEmails)
@@ -482,20 +483,25 @@ public class Main {
 
                 // Delete Button
                 deleteButton.addActionListener(e1 -> {
-                    String code = JOptionPane.showInputDialog(newFrame, "Enter email code:");
+                    while (true) {
+                        String code = JOptionPane.showInputDialog(newFrame, "Enter email code:");
 
-                    if (code != null) {
-                        try {
-                            Email deletedEmail = EmailService.findByCode(code);
-                            List<User> recipients = EmailService.findRecipientsOfEmail(deletedEmail);
-                            EmailService.deleteEmail(user, EmailService.findByCode(code));
-                            refreshUsers(recipients);
-                            refreshUsers(Arrays.asList(user));
+                        if (code != null) {
+                            try {
+                                Email deletedEmail = EmailService.findByCode(code);
+                                List<User> recipients = EmailService.findRecipientsOfEmail(code);
+                                EmailService.deleteEmail(user, code);
+                                refreshUsers(recipients);
+                                refreshUsers(Arrays.asList(user));
 
-                            JOptionPane.showMessageDialog(newFrame, "Successfully deleted email\nCode: " + EmailService.convertToCode(deletedEmail.getId()));
-                        } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(newFrame, "Error: " + ex.getMessage());
+                                JOptionPane.showMessageDialog(newFrame, "Successfully deleted email\nCode: " + EmailService.convertToCode(deletedEmail.getId()));
+                                break;
+                            } catch (Exception ex) {
+                                JOptionPane.showMessageDialog(newFrame, "Error: " + ex.getMessage());
+                            }
                         }
+                        else
+                            break;
                     }
                 });
 
@@ -530,6 +536,7 @@ public class Main {
         signUpPanel.setLayout(null);
         signUpPanel.setSize(mainSize);
         signUpPanel.setLocation(0, 0);
+        signUpPanel.setBackground(new Color(0xFFFFFF));
 
         JLabel signUpNameLabel = new JLabel("Name:");
         signUpNameLabel.setBounds(100, 15, 80, 25);
@@ -591,7 +598,7 @@ public class Main {
         // Quit Button
         quitButton.addActionListener(e -> {
             try {
-                PrintWriter writer = new PrintWriter("E:\\Code\\Milou\\src\\main\\logs\\hibernate.log");
+                PrintWriter writer = new PrintWriter("src\\main\\logs\\hibernate.log");
                 writer.print("");
                 writer.close();
             } catch (FileNotFoundException ex) {
@@ -652,27 +659,30 @@ public class Main {
     }
 
     public static String completeEmail(String email) {
-        if (!email.contains("@"))
+        if (!email.endsWith("@milou.com"))
             email += "@milou.com";
         return email;
     }
 
     public static void refreshUnread(List<User> users) {
         for (User user: users)
-            for (JList<String> list: accountUnreadList.get(user.getId()))
-                list.setModel(defaultListModelMaker("Unread Emails", EmailService.showUnreadEmails(user)));
+            if (accountUnreadList.containsKey(user.getId()))
+                for (JList<String> list: accountUnreadList.get(user.getId()))
+                    list.setModel(defaultListModelMaker("Unread Emails", EmailService.showUnreadEmails(user)));
     }
 
     public static void refreshAll(List<User> users) {
         for (User user: users)
-            for (JList<String> list: accountAllList.get(user.getId()))
-                list.setModel(defaultListModelMaker("All Emails", EmailService.showAllEmails(user)));
+            if (accountAllList.containsKey(user.getId()))
+                for (JList<String> list: accountAllList.get(user.getId()))
+                    list.setModel(defaultListModelMaker("All Emails", EmailService.showAllEmails(user)));
     }
 
     public static void refreshSent(List<User> users) {
         for (User user: users)
-            for (JList<String> list: accountSentList.get(user.getId()))
-                list.setModel(defaultListModelMaker("Sent Emails", EmailService.showSentEmails(user)));
+            if (accountSentList.containsKey(user.getId()))
+                for (JList<String> list: accountSentList.get(user.getId()))
+                    list.setModel(defaultListModelMaker("Sent Emails", EmailService.showSentEmails(user)));
     }
 
     public static void refreshUsers(List<User> users) {
