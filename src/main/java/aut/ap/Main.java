@@ -99,9 +99,12 @@ public class Main {
             try {
                 User user = UserService.loginUser(email, password);
                 JOptionPane.showMessageDialog(mainFrame,"Welcome back, " + user.getName() + "!\n");
-                accountUnreadList.put(user.getId(), new ArrayList<>());
-                accountAllList.put(user.getId(), new ArrayList<>());
-                accountSentList.put(user.getId(), new ArrayList<>());
+                if (!accountUnreadList.containsKey(user.getId()))
+                    accountUnreadList.put(user.getId(), new ArrayList<>());
+                if (!accountAllList.containsKey(user.getId()))
+                    accountAllList.put(user.getId(), new ArrayList<>());
+                if (!accountSentList.containsKey(user.getId()))
+                    accountSentList.put(user.getId(), new ArrayList<>());
 
                 // Acc Frame
                 JFrame newFrame = new JFrame(user.getName());
@@ -116,23 +119,27 @@ public class Main {
                 showEmails(accMainPanel, "Unread Emails", EmailService.showUnreadEmails(user), 0, 0, accSize.width - (buttonSize.width + 20), accSize.height, user.getId());
 
                 JButton sendButton = new JButton("Send");
-                sendButton.setBounds(332, 20, buttonSize.width, buttonSize.height);
+                sendButton.setBounds(332, 10, buttonSize.width, buttonSize.height);
                 accMainPanel.add(sendButton);
 
                 JButton viewButton = new JButton("View");
-                viewButton.setBounds(332, 90, buttonSize.width, buttonSize.height);
+                viewButton.setBounds(332, 70, buttonSize.width, buttonSize.height);
                 accMainPanel.add(viewButton);
 
                 JButton replyButton = new JButton("Reply");
-                replyButton.setBounds(332, 160, buttonSize.width, buttonSize.height);
+                replyButton.setBounds(332, 130, buttonSize.width, buttonSize.height);
                 accMainPanel.add(replyButton);
 
                 JButton forwardButton = new JButton("Forward");
-                forwardButton.setBounds(332, 230, buttonSize.width, buttonSize.height);
+                forwardButton.setBounds(332, 190, buttonSize.width, buttonSize.height);
                 accMainPanel.add(forwardButton);
 
+                JButton deleteButton = new JButton("Delete");
+                deleteButton.setBounds(332, 250, buttonSize.width, buttonSize.height);
+                accMainPanel.add(deleteButton);
+
                 JButton accQuitButton = new JButton("Log out");
-                accQuitButton.setBounds(332, 300, buttonSize.width, buttonSize.height);
+                accQuitButton.setBounds(332, 310, buttonSize.width, buttonSize.height);
                 accMainPanel.add(accQuitButton);
 
                 // Send Panel
@@ -473,6 +480,26 @@ public class Main {
                     newFrame.repaint();
                 });
 
+                // Delete Button
+                deleteButton.addActionListener(e1 -> {
+                    String code = JOptionPane.showInputDialog(newFrame, "Enter email code:");
+
+                    if (code != null) {
+                        try {
+                            Email deletedEmail = EmailService.findByCode(code);
+                            List<User> recipients = EmailService.findRecipientsOfEmail(deletedEmail);
+                            EmailService.deleteEmail(user, EmailService.findByCode(code));
+                            refreshUsers(recipients);
+                            refreshUsers(Arrays.asList(user));
+
+                            JOptionPane.showMessageDialog(newFrame, "Successfully deleted email\nCode: " + EmailService.convertToCode(deletedEmail.getId()));
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(newFrame, "Error: " + ex.getMessage());
+                        }
+                    }
+                });
+
+                // LogOut Button
                 accQuitButton.addActionListener(e1 -> newFrame.dispose());
 
                 newFrame.add(accMainPanel);
@@ -484,14 +511,11 @@ public class Main {
                 JOptionPane.showMessageDialog(mainFrame,"Error: " + ex.getMessage());
             }
         });
-        logInBackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.remove(logInPanel);
-                mainFrame.add(publicPanel);
-                mainFrame.revalidate();
-                mainFrame.repaint();
-            }
+        logInBackButton.addActionListener(e -> {
+            mainFrame.remove(logInPanel);
+            mainFrame.add(publicPanel);
+            mainFrame.revalidate();
+            mainFrame.repaint();
         });
 
         logInButton.addActionListener(e -> {
