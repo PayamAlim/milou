@@ -37,6 +37,7 @@ public class Main {
         publicPanel.setLayout(null);
         publicPanel.setSize(mainSize);
         publicPanel.setLocation(0, 0);
+        publicPanel.setBackground(new Color(0xFFFFFF));
 
         ImageIcon milouIcon = new ImageIcon("assets\\milou.jpg");
         JLabel milouLabel = new JLabel(new ImageIcon(milouIcon.getImage().getScaledInstance(imageSize.width, imageSize.height, Image.SCALE_SMOOTH)));
@@ -65,6 +66,7 @@ public class Main {
         logInPanel.setLayout(null);
         logInPanel.setSize(mainSize);
         logInPanel.setLocation(0, 0);
+        logInPanel.setBackground(new Color(0xFFFFFF));
 
         JLabel logInEmailLabel = new JLabel("Email:");
         logInEmailLabel.setBounds(100, 45, 80, 25);
@@ -113,6 +115,7 @@ public class Main {
                 // Acc Main Panel
                 JPanel accMainPanel = new JPanel(null);
                 accMainPanel.setBounds(0, 0, accSize.width, accSize.height);
+                accMainPanel.setBackground(new Color(0xFFFFFF));
 
                 showEmails(accMainPanel, "Unread Emails", EmailService.showUnreadEmails(user), 0, 0, accSize.width - (buttonSize.width + 20), accSize.height, user.getId());
 
@@ -145,6 +148,7 @@ public class Main {
                 sendPanel.setLayout(null);
                 sendPanel.setSize(mainSize);
                 sendPanel.setLocation(0, 0);
+                sendPanel.setBackground(new Color(0xFFFFFF));
 
                 JLabel sendRecipients = new JLabel("Recipient(s):");
                 sendRecipients.setBounds(100, 45, 80, 25);
@@ -230,6 +234,7 @@ public class Main {
                 // View Panel
                 JPanel viewPanel = new JPanel(null);
                 viewPanel.setSize(accSize);
+                viewPanel.setBackground(new Color(0xFFFFFF));
 
                 ImageIcon icon = new ImageIcon("assets\\opened mail.jpg");
                 JLabel imageLabel = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(imageSize.width, imageSize.height, Image.SCALE_SMOOTH)));
@@ -345,6 +350,7 @@ public class Main {
                 replyPanel.setLayout(null);
                 replyPanel.setSize(mainSize);
                 replyPanel.setLocation(0, 0);
+                replyPanel.setBackground(new Color(0xFFFFFF));
 
                 JLabel replyCode = new JLabel("Code:");
                 replyCode.setBounds(100, 45, 80, 25);
@@ -403,6 +409,7 @@ public class Main {
                 forwardPanel.setLayout(null);
                 forwardPanel.setSize(mainSize);
                 forwardPanel.setLocation(0, 0);
+                forwardPanel.setBackground(new Color(0xFFFFFF));
 
                 JLabel forwardCode = new JLabel("Code:");
                 forwardCode.setBounds(100, 45, 80, 25);
@@ -528,6 +535,7 @@ public class Main {
         signUpPanel.setLayout(null);
         signUpPanel.setSize(mainSize);
         signUpPanel.setLocation(0, 0);
+        signUpPanel.setBackground(new Color(0xFFFFFF));
 
         JLabel signUpNameLabel = new JLabel("Name:");
         signUpNameLabel.setBounds(100, 15, 80, 25);
