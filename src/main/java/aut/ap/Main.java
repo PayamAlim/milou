@@ -598,7 +598,7 @@ public class Main {
         // Quit Button
         quitButton.addActionListener(e -> {
             try {
-                PrintWriter writer = new PrintWriter("E:\\Code\\Milou\\src\\main\\logs\\hibernate.log");
+                PrintWriter writer = new PrintWriter("src\\main\\logs\\hibernate.log");
                 writer.print("");
                 writer.close();
             } catch (FileNotFoundException ex) {
