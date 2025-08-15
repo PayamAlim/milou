@@ -165,6 +165,45 @@ public class EmailService {
         return email;
     }
 
+    public static Email deleteEmail(User deleter, Email email) {
+        if (deleter == null) throw new IllegalArgumentException("Sender is no one");
+        if (email == null) throw new IllegalArgumentException("No email selected");
+
+        boolean isSender = email.getSender().getId().equals(deleter.getId());
+        boolean isRecipient = findRecipientsOfEmail(email).contains(deleter);
+
+        if (!isSender && !isRecipient)
+            throw new IllegalArgumentException("You cannot delete this email.");
+
+        if (isSender) {
+            SingletonSessionFactory.get()
+                    .fromTransaction(session ->
+                            session.createNativeMutationQuery("delete from email_recipients " +
+                                            "where email_id = :email_id")
+                                    .setParameter("email_id", email.getId())
+                                    .executeUpdate()
+                    );
+            SingletonSessionFactory.get()
+                    .fromTransaction(session ->
+                            session.createNativeMutationQuery("delete from emails " +
+                                            "where id = :email_id")
+                                    .setParameter("email_id", email.getId())
+                                    .executeUpdate()
+                    );
+        } else {
+            SingletonSessionFactory.get()
+                    .fromTransaction(session ->
+                            session.createNativeMutationQuery("delete from email_recipients " +
+                                            "where email_id = :email_id and recipient_id = :recipient_id")
+                                    .setParameter("email_id", email.getId())
+                                    .setParameter("recipient_id", deleter.getId())
+                                    .executeUpdate()
+                    );
+        }
+
+        return null;
+    }
+
     public static String convertToCode(Integer id) {
         String code = Integer.toString(id, 36);
         int len = code.length();
