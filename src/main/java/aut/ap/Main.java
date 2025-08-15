@@ -201,9 +201,7 @@ public class Main {
                         refreshUsers(existEmails);
                         refreshUsers(Arrays.asList(user));
 
-                        String statusMessage = "";
-                        if (!existEmails.isEmpty())
-                            statusMessage += "Successfully sent your email.";
+                        String statusMessage = "Successfully sent your email.";
                         if (!wrongEmails.isEmpty()) {
                             statusMessage += "\nBUT NOT TO " ;
                             for (String wrongEmail: wrongEmails)
@@ -454,9 +452,7 @@ public class Main {
                         refreshUsers(existEmails);
                         refreshUsers(Arrays.asList(user));
 
-                        String statusMessage = "";
-                        if (!existEmails.isEmpty())
-                            statusMessage += "Successfully forwarded your email.";
+                        String statusMessage = "Successfully forwarded your email.";
                         if (!wrongEmails.isEmpty()) {
                             statusMessage += "\nBUT NOT TO " ;
                             for (String wrongEmail: wrongEmails)
@@ -663,7 +659,7 @@ public class Main {
     }
 
     public static String completeEmail(String email) {
-        if (!email.contains("@"))
+        if (!email.endsWith("@milou.com"))
             email += "@milou.com";
         return email;
     }

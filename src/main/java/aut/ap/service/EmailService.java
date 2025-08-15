@@ -10,6 +10,7 @@ import java.util.List;
 
 public class EmailService {
     public static Email sendEmail(User sender, String subject, String body, List<User> recipients) {
+
         if (recipients.isEmpty()) throw new IllegalArgumentException("No recipients");
 
         Email email = makeEmail(sender, subject, body);
