@@ -487,20 +487,25 @@ public class Main {
 
                 // Delete Button
                 deleteButton.addActionListener(e1 -> {
-                    String code = JOptionPane.showInputDialog(newFrame, "Enter email code:");
+                    while (true) {
+                        String code = JOptionPane.showInputDialog(newFrame, "Enter email code:");
 
-                    if (code != null) {
-                        try {
-                            Email deletedEmail = EmailService.findByCode(code);
-                            List<User> recipients = EmailService.findRecipientsOfEmail(deletedEmail);
-                            EmailService.deleteEmail(user, code);
-                            refreshUsers(recipients);
-                            refreshUsers(Arrays.asList(user));
+                        if (code != null) {
+                            try {
+                                Email deletedEmail = EmailService.findByCode(code);
+                                List<User> recipients = EmailService.findRecipientsOfEmail(deletedEmail);
+                                EmailService.deleteEmail(user, code);
+                                refreshUsers(recipients);
+                                refreshUsers(Arrays.asList(user));
 
-                            JOptionPane.showMessageDialog(newFrame, "Successfully deleted email\nCode: " + EmailService.convertToCode(deletedEmail.getId()));
-                        } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(newFrame, "Error: " + ex.getMessage());
+                                JOptionPane.showMessageDialog(newFrame, "Successfully deleted email\nCode: " + EmailService.convertToCode(deletedEmail.getId()));
+                                break;
+                            } catch (Exception ex) {
+                                JOptionPane.showMessageDialog(newFrame, "Error: " + ex.getMessage());
+                            }
                         }
+                        else
+                            break;
                     }
                 });
 
