@@ -288,7 +288,7 @@ public class Main {
                         try {
                             Email foundEmail = EmailService.findByCode(code);
                             EmailService.readEmail(user, foundEmail);
-                            refreshUsers(EmailService.findRecipientsOfEmail(foundEmail));
+                            refreshUsers(Arrays.asList(user));
 
                             JPanel readPanel = new JPanel(null);
                             readPanel.setBounds(0, 0, accSize.width, accSize.height);
