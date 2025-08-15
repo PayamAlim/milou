@@ -5,8 +5,6 @@ import aut.ap.service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -659,20 +657,23 @@ public class Main {
 
     public static void refreshUnread(List<User> users) {
         for (User user: users)
-            for (JList<String> list: accountUnreadList.get(user.getId()))
-                list.setModel(defaultListModelMaker("Unread Emails", EmailService.showUnreadEmails(user)));
+            if (accountUnreadList.containsKey(user.getId()))
+                for (JList<String> list: accountUnreadList.get(user.getId()))
+                    list.setModel(defaultListModelMaker("Unread Emails", EmailService.showUnreadEmails(user)));
     }
 
     public static void refreshAll(List<User> users) {
         for (User user: users)
-            for (JList<String> list: accountAllList.get(user.getId()))
-                list.setModel(defaultListModelMaker("All Emails", EmailService.showAllEmails(user)));
+            if (accountAllList.containsKey(user.getId()))
+                for (JList<String> list: accountAllList.get(user.getId()))
+                    list.setModel(defaultListModelMaker("All Emails", EmailService.showAllEmails(user)));
     }
 
     public static void refreshSent(List<User> users) {
         for (User user: users)
-            for (JList<String> list: accountSentList.get(user.getId()))
-                list.setModel(defaultListModelMaker("Sent Emails", EmailService.showSentEmails(user)));
+            if (accountSentList.containsKey(user.getId()))
+                for (JList<String> list: accountSentList.get(user.getId()))
+                    list.setModel(defaultListModelMaker("Sent Emails", EmailService.showSentEmails(user)));
     }
 
     public static void refreshUsers(List<User> users) {

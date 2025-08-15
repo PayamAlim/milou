@@ -100,7 +100,16 @@ public class EmailService {
     }
 
     public static Email replyEmail(User sender, String code, String body) {
+        if (sender == null) throw new IllegalArgumentException("Sender is no one");
+
         Email email = findByCode(code);
+
+        boolean isSender = email.getSender().getId().equals(sender.getId());
+        boolean isRecipient = findRecipientsOfEmail(email).contains(sender);
+
+        if (!isSender && !isRecipient)
+            throw new IllegalArgumentException("You cannot reply this email.");
+
         List<User> recipients = findRecipientsOfEmail(email);
         recipients.add(email.getSender());
         recipients.remove(sender);
@@ -109,7 +118,15 @@ public class EmailService {
     }
 
     public static Email forwardEmail(User sender, String code, List<User> recipients) {
+        if (sender == null) throw new IllegalArgumentException("Sender is no one");
+
         Email email = findByCode(code);
+
+        boolean isSender = email.getSender().getId().equals(sender.getId());
+        boolean isRecipient = findRecipientsOfEmail(email).contains(sender);
+
+        if (!isSender && !isRecipient)
+            throw new IllegalArgumentException("You cannot forward this email.");
 
         return sendEmail(sender, "[Fw] " + email.getSubject(), email.getBody(), recipients);
     }
